@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -24,7 +25,7 @@ import {
 } from "@/redux/Slices/grocerySlice";
 import { useAppSelector } from "@/redux/store/store";
 import { Filter, Minus, Plus, Search, ShoppingCart, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/themeToggle";
@@ -110,6 +111,13 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("none");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredItems = useMemo(() => {
     let data = [...Items];
@@ -135,6 +143,26 @@ export default function Home() {
     return items.find((i: any) => i.id === itemId);
   };
 
+  const CardSkeleton = () => (
+    <Card className="border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/80 overflow-hidden h-full flex flex-col">
+      <div className="h-32 w-full p-2 bg-slate-50 dark:bg-slate-900/50">
+        <Skeleton className="h-full w-full rounded-md" />
+      </div>
+      <CardHeader className="p-2 pb-0">
+        <Skeleton className="h-4 w-12 rounded-full" />
+      </CardHeader>
+      <CardContent className="p-3 pt-2 flex flex-col flex-grow space-y-3">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-6 w-1/3" />
+        </div>
+        <div className="mt-auto">
+          <Skeleton className="h-8 w-20 rounded-md" />
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Header */}
@@ -145,7 +173,9 @@ export default function Home() {
             {/* Logo */}
             <div className="flex items-center gap-2 shrink-0">
               <h1 className="text-lg sm:text-xl font-bold tracking-tight">
-                <span className="text-yellow-500 dark:text-yellow-400">Grocery</span>
+                <span className="text-yellow-500 dark:text-yellow-400">
+                  Grocery
+                </span>
                 <span className="text-green-600 dark:text-green-500">Mart</span>
               </h1>
             </div>
@@ -161,18 +191,37 @@ export default function Home() {
                   className="pl-9 h-9 bg-white/80 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
-              
+
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger className="w-[130px] h-9 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 dark:text-slate-100">
                   <Filter className="w-3.5 h-3.5 mr-2" />
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
-                  <SelectItem value="all" className="dark:text-slate-100 dark:focus:bg-slate-700">All Items</SelectItem>
-                  <SelectItem value="Breads" className="dark:text-slate-100 dark:focus:bg-slate-700">Breads</SelectItem>
-                  <SelectItem value="Dairy" className="dark:text-slate-100 dark:focus:bg-slate-700">Dairy</SelectItem>
-                  <SelectItem value="Eggs" className="dark:text-slate-100 dark:focus:bg-slate-700">Eggs</SelectItem>
-                  
+                  <SelectItem
+                    value="all"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    All Items
+                  </SelectItem>
+                  <SelectItem
+                    value="Breads"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Breads
+                  </SelectItem>
+                  <SelectItem
+                    value="Dairy"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Dairy
+                  </SelectItem>
+                  <SelectItem
+                    value="Eggs"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Eggs
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -181,9 +230,24 @@ export default function Home() {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
-                  <SelectItem value="none" className="dark:text-slate-100 dark:focus:bg-slate-700">Default</SelectItem>
-                  <SelectItem value="low" className="dark:text-slate-100 dark:focus:bg-slate-700">Price: Low to High</SelectItem>
-                  <SelectItem value="high" className="dark:text-slate-100 dark:focus:bg-slate-700">Price: High to Low</SelectItem>
+                  <SelectItem
+                    value="none"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Default
+                  </SelectItem>
+                  <SelectItem
+                    value="low"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Price: Low to High
+                  </SelectItem>
+                  <SelectItem
+                    value="high"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Price: High to Low
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -191,7 +255,7 @@ export default function Home() {
             {/* Theme Toggle & Cart */}
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              
+
               <Link href="/cart">
                 <Button className="relative h-9 px-3 sm:px-4 bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 cursor-pointer shadow-lg dark:shadow-green-900/50 text-white transition-all active:scale-95">
                   <ShoppingCart className="w-4 h-4 sm:mr-2" />
@@ -223,10 +287,30 @@ export default function Home() {
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
-                  <SelectItem value="all" className="dark:text-slate-100 dark:focus:bg-slate-700">All</SelectItem>
-                  <SelectItem value="Fruits" className="dark:text-slate-100 dark:focus:bg-slate-700">Fruits</SelectItem>
-                  <SelectItem value="Dairy" className="dark:text-slate-100 dark:focus:bg-slate-700">Dairy</SelectItem>
-                  <SelectItem value="Grains" className="dark:text-slate-100 dark:focus:bg-slate-700">Grains</SelectItem>
+                  <SelectItem
+                    value="all"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    All
+                  </SelectItem>
+                  <SelectItem
+                    value="Fruits"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Fruits
+                  </SelectItem>
+                  <SelectItem
+                    value="Dairy"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Dairy
+                  </SelectItem>
+                  <SelectItem
+                    value="Grains"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Grains
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -235,9 +319,24 @@ export default function Home() {
                   <SelectValue placeholder="Sort" />
                 </SelectTrigger>
                 <SelectContent className="dark:bg-slate-800 dark:border-slate-700">
-                  <SelectItem value="none" className="dark:text-slate-100 dark:focus:bg-slate-700">Default</SelectItem>
-                  <SelectItem value="low" className="dark:text-slate-100 dark:focus:bg-slate-700">Price: Low</SelectItem>
-                  <SelectItem value="high" className="dark:text-slate-100 dark:focus:bg-slate-700">Price: High</SelectItem>
+                  <SelectItem
+                    value="none"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Default
+                  </SelectItem>
+                  <SelectItem
+                    value="low"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Price: Low
+                  </SelectItem>
+                  <SelectItem
+                    value="high"
+                    className="dark:text-slate-100 dark:focus:bg-slate-700"
+                  >
+                    Price: High
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -245,106 +344,113 @@ export default function Home() {
         </div>
       </header>
 
+      <div className="container mx-auto px-4 mt-6">
+        {loading ? (
+          <Skeleton className="w-full aspect-1280/272 rounded-2xl" />
+        ) : (
+          <div className="relative w-full overflow-hidden rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+            <img
+              src="https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=2700/layout-engine/2026-01/Frame-1437256605-2-2.jpg"
+              alt="Fresh Fruits and Vegetables Banner"
+              className="w-full h-auto object-cover hover:scale-[1.01] transition-transform duration-500 cursor-pointer"
+            />
+          </div>
+        )}
+      </div>
+
       <div className="container mx-auto px-4 py-8">
-        {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredItems.map((item) => {
-            const cartItem = getItemInCart(item.id);
-            const isInCart = !!cartItem;
-            const quantityToShow = cartItem ? cartItem.quantity : 1;
+          {loading
+            ? // 1. Loading State: Show Skeletons
+              Array.from({ length: 8 }).map((_, index) => (
+                <CardSkeleton key={index} />
+              ))
+            : // 2. Data State: Show Filtered Items
+              filteredItems.map((item) => {
+                const cartItem = getItemInCart(item.id);
+                const isInCart = !!cartItem;
+                const quantityToShow = cartItem ? cartItem.quantity : 1;
 
-            return (
-              <Card
-                key={item.id}
-                className="group hover:shadow-2xl dark:hover:shadow-slate-900/80 transition-all duration-300 border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/80 backdrop-blur-sm overflow-hidden h-full flex flex-col max-w-full hover:border-green-500/50 dark:hover:border-green-600/50"
-              >
-                {/* Image Container */}
-                <div className="relative h-32 w-full overflow-hidden bg-slate-50 dark:bg-slate-900/50 p-2">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-110"
-                  />
-                </div>
-
-                <CardHeader className="p-2 pb-0">
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] w-fit px-1.5 py-0 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-0"
+                return (
+                  <Card
+                    key={item.id}
+                    className="group hover:shadow-2xl dark:hover:shadow-slate-900/80 transition-all duration-300 border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/80 backdrop-blur-sm overflow-hidden h-full flex flex-col hover:border-green-500/50"
                   >
-                    {item.category}
-                  </Badge>
-                </CardHeader>
-
-                <CardContent className="p-3 pt-2 flex flex-col flex-grow">
-                  <div className="mb-3">
-                    <CardTitle className="text-sm font-semibold leading-tight line-clamp-1 text-slate-900 dark:text-slate-100">
-                      {item.name}
-                    </CardTitle>
-                    <CardDescription className="text-lg font-bold text-green-600 dark:text-green-500">
-                      ₹{item.price}
-                    </CardDescription>
-                  </div>
-
-                  <div className="mt-auto">
-                    {!isInCart ? (
-                      <Button
-                        onClick={() => dispatch(toggleItem(item))}
-                        variant="outline"
-                        className="w-20 h-8 text-xs font-semibold border-green-600 dark:border-green-500 text-green-600 dark:text-green-500 hover:bg-green-600 dark:hover:bg-green-600 hover:text-white dark:hover:text-white transition-all duration-200 cursor-pointer hover:shadow-lg dark:hover:shadow-green-900/50"
+                    <div className="relative h-32 w-full overflow-hidden bg-slate-50 dark:bg-slate-900/50 p-2">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </div>
+                    <CardHeader className="p-2 pb-0">
+                      <Badge
+                        variant="secondary"
+                        className="text-[10px] w-fit px-1.5 py-0"
                       >
-                        <Plus className="w-3 h-3 mr-1" />
-                        Add
-                      </Button>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between border rounded-md h-8 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => dispatch(decrementItem(item.id))}
-                            className="h-full px-2 hover:bg-slate-200 dark:hover:bg-slate-700 dark:text-slate-100"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </Button>
-
-                          <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                            {quantityToShow}
-                          </span>
-
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => dispatch(incrementItem(item.id))}
-                            className="h-full px-2 hover:bg-slate-200 dark:hover:bg-slate-700 dark:text-slate-100"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </Button>
-                        </div>
-
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="w-full h-7 text-[10px] text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50 cursor-pointer transition-colors"
-                          onClick={() => dispatch(toggleItem(item))}
-                        >
-                          <X className="w-3 h-3 mr-1" />
-                          Remove
-                        </Button>
+                        {item.category}
+                      </Badge>
+                    </CardHeader>
+                    <CardContent className="p-3 pt-2 flex flex-col flex-grow">
+                      <div className="mb-3">
+                        <CardTitle className="text-sm font-semibold line-clamp-1">
+                          {item.name}
+                        </CardTitle>
+                        <CardDescription className="text-lg font-bold text-green-600">
+                          ₹{item.price}
+                        </CardDescription>
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                      <div className="mt-auto">
+                        {!isInCart ? (
+                          <Button
+                            onClick={() => dispatch(toggleItem(item))}
+                            variant="outline"
+                            className="w-20 h-8 text-xs border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                          >
+                            <Plus className="w-3 h-3 mr-1" /> Add
+                          </Button>
+                        ) : (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between border rounded-md h-8">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => dispatch(decrementItem(item.id))}
+                              >
+                                <Minus className="w-3 h-3" />
+                              </Button>
+                              <span className="text-sm font-bold">
+                                {quantityToShow}
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => dispatch(incrementItem(item.id))}
+                              >
+                                <Plus className="w-3 h-3" />
+                              </Button>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full h-7 text-[10px] text-red-600"
+                              onClick={() => dispatch(toggleItem(item))}
+                            >
+                              <X className="w-3 h-3 mr-1" /> Remove
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
         </div>
 
-        {filteredItems.length === 0 && (
-          <div className="text-center py-20 col-span-full">
-            <p className="text-slate-500 dark:text-slate-400 text-lg">
-              No items found. Try adjusting your filters.
-            </p>
+        {/* 3. Empty State */}
+        {!loading && filteredItems.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-slate-500 text-lg">No items found.</p>
           </div>
         )}
       </div>

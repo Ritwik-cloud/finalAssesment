@@ -73,11 +73,12 @@ const Page = () => {
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
-
-              <h1 className="text-xl font-bold tracking-tight hidden sm:block">
-                <span className=" text-yellow-500"> Grocery</span>
-                <span className="text-green-600">Cart</span>
-              </h1>
+              <Link href="/">
+                <h1 className="text-xl font-bold tracking-tight hidden sm:block">
+                  <span className=" text-yellow-500"> Grocery</span>
+                  <span className="text-green-600">Cart</span>
+                </h1>
+              </Link>
             </div>
           </div>
         </header>
@@ -101,7 +102,10 @@ const Page = () => {
                         Your cart is empty
                       </p>
                       <a href="/">
-                        <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-colors duration-200 cursor-pointer">
+                        <Button
+                          variant="outline"
+                          className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-colors duration-200 cursor-pointer"
+                        >
                           Start Shopping
                         </Button>
                       </a>
@@ -214,8 +218,7 @@ const Page = () => {
                             setShowSuccess(true);
                             setTimeout(() => setShowSuccess(false), 3000);
                           }}
-                          
-                          disabled= {items.length === 0}
+                          disabled={items.length === 0}
                           className={`text-xs px-2 py-1 rounded-md border transition-all cursor-pointer ${
                             coupon === code
                               ? "bg-green-600 border-green-600 text-white shadow-sm"
@@ -271,7 +274,6 @@ const Page = () => {
                   </div>
 
                   <Separator />
-                  
 
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold">Total Amount</span>
@@ -280,14 +282,13 @@ const Page = () => {
                     </span>
                   </div>
 
-                 {total < 100 && total > 0 && (
+                  {total < 100 && total > 0 && (
                     <Alert className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/50">
                       <AlertDescription className="text-sm text-blue-700 dark:text-blue-300">
                         Add ₹{100 - total} more to get 10% bulk discount!
                       </AlertDescription>
                     </Alert>
                   )}
-
 
                   <Button
                     className="w-full text-lg py-6 text-white bg-green-700  hover:bg-green-800 hover:transition-colors duration-200 cursor-pointer "
